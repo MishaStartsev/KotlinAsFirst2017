@@ -94,6 +94,7 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  * Вернуть 0, если угрозы нет, 1, если угроза только от ладьи, 2, если только от слона,
  * и 3, если угроза есть и от ладьи и от слона.
  * Считать, что ладья и слон не могут загораживать друг друга.
+ *
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
