@@ -60,7 +60,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Найти количество цифр в заданном числе n.
  * Например, число 1 содержит 1 цифру, 456 -- 3 цифры, 65536 -- 5 цифр.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int = n.toString().length
 
 /**
  * Простая
@@ -68,7 +68,20 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var f1 = 1
+    var f2 = 1
+    var f3 = 1
+    var k = 2
+    if ((n == 1)|| (n == 2)) return 1
+    while (k < n) {
+        f3 = f1 + f2
+        f1 = f2
+        f2 = f3
+        ++k
+    }
+    return f3
+}
 
 /**
  * Простая
@@ -83,14 +96,26 @@ fun lcm(m: Int, n: Int): Int = TODO()
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var divisor = 2
+    while (true) {
+        if (n % divisor == 0 ) return divisor
+        ++divisor
+    }
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var mDivisor = n / 2
+    while (true){
+        if (n % mDivisor == 0) return mDivisor
+        --mDivisor
+    }
+}
 
 /**
  * Простая
@@ -134,7 +159,29 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Поменять порядок цифр заданного числа n на обратный: 13478 -> 87431.
  * Не использовать строки при решении задачи.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var k = n
+    var i = 0
+    var count = 0
+    while(k > 0){
+        k = k / 10
+        ++i
+        ++count
+    }
+
+    var t = 1
+    for (o in 1..count - 1) t*=10
+
+    k = 0
+    var s = n
+    while(i > 0){
+        k = k + (s % 10)*t
+        s = s / 10
+        t = t / 10
+        --i
+    }
+    return k
+}
 
 /**
  * Средняя
