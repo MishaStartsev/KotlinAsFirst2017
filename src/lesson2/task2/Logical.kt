@@ -2,7 +2,8 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
-import java.lang.Math.*
+import java.lang.Math.abs
+import java.lang.Math.sqrt
 
 /**
  * Пример
@@ -19,7 +20,7 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean =
-        (number/1000+(number%1000)/100)==(number%100/10)+number%10
+        (number / 1000 +(number % 1000) / 100) == (number % 100 / 10) + number % 10
 
 /**
  * Простая
