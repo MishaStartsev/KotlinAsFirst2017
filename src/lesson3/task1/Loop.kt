@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
-
+import java.lang.Math.PI
+import java.lang.Math.abs
 /**
  * Пример
  *
@@ -60,8 +61,10 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Найти количество цифр в заданном числе n.
  * Например, число 1 содержит 1 цифру, 456 -- 3 цифры, 65536 -- 5 цифр.
  */
-fun digitNumber(n: Int): Int = n.toString().length
-
+fun digitNumber(n: Int): Int = when {
+    abs(n) < 10 -> 1
+    else -> digitNumber(n / 10) + 1
+}
 /**
  * Простая
  *
@@ -89,7 +92,16 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var i = m
+    var j = n
+    while (j != 0) {
+        val tmp = i % j
+        i = j
+        j = tmp
+    }
+    return m * n / i
+}
 
 /**
  * Простая
@@ -124,7 +136,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean = m * n / lcm(m, n) == 1
 
 /**
  * Простая
@@ -133,7 +145,14 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean  {
+    var k = 0.0
+    while (k*k <= n){
+        if((m <= k*k) && (k*k <= n)) return true
+        ++k
+    }
+    return false
+}
 
 /**
  * Средняя
@@ -142,7 +161,18 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    val normal = x % (2 * PI)
+    var k = normal
+    var l = normal
+    var i = 2.0
+    while (abs(k) > eps) {
+        k = (-k * normal * normal) / (i * (i + 1.0))
+        l += k
+        i += 2.0
+    }
+    return l
+}
 
 /**
  * Средняя
@@ -151,7 +181,18 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    val normal = x % (2 * PI)
+    var k = 1.0
+    var l = 1.0
+    var i = 1.0
+    while (abs(k) > eps) {
+        k = (-k * normal * normal) / (i * (i + 1.0))
+        l += k
+        i += 2.0
+    }
+    return l
+}
 
 /**
  * Средняя
@@ -190,7 +231,27 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean  {
+    var k = n
+    var count = 0
+    while (k > 0) {
+        k = k / 10
+        ++count
+    }
+
+    var t = 1
+    for (i in 1..count-1) t*=10
+
+    k = 10
+    var s = n
+    for (i in 1..(count / 2 + count % 2)) {
+        if (s / t != (n % k) * 10 / k) return false
+        k = k * 10
+        s = s % t
+        t /= 10
+    }
+    return true
+}
 
 /**
  * Средняя
