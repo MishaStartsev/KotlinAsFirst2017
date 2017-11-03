@@ -259,7 +259,18 @@ fun isPalindrome(n: Int): Boolean  {
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean  {
+    if(n < 10) return false
+    var count = 1
+    val prev = n % 10
+    while(n / count != 0){
+        val k = (n / count) % 10
+        if (k != prev) return true
+        count *= 10
+    }
+    return false
+}
+
 
 /**
  * Сложная
@@ -268,7 +279,29 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var k = 1
+    var numberOfDec = 1
+    while (true) {
+        var total = k * k
+        if (total >= 10) {
+            var i = digitNumber(total)
+            while (i != 0) {
+                if (numberOfDec == n) {
+                    for (j in 1..i-1) total /= 10
+                    return total % 10
+                }
+                ++numberOfDec
+                --i
+            }
+            ++k
+        } else {
+            if (numberOfDec == n) return total
+            ++k
+            ++numberOfDec
+        }
+    }
+}
 
 /**
  * Сложная
@@ -277,4 +310,26 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  * 1123581321345589144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var k = 1
+    var numberOfDec = 1
+    while (true) {
+        var total = fib(k)
+        var i = digitNumber(total)
+        if (total >= 10) {
+            while (i != 0) {
+                if (numberOfDec == n) {
+                    for (j in 1..i-1) total /= 10
+                    return total % 10
+                }
+                ++numberOfDec
+                --i
+            }
+            ++k
+        } else {
+            if (numberOfDec == n) return total
+            ++k
+            ++numberOfDec
+        }
+    }
+}
