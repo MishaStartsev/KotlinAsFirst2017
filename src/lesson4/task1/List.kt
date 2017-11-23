@@ -2,6 +2,8 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import java.lang.Math.min
+import java.lang.Math.pow
 
 /**
  * Пример
@@ -187,7 +189,30 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    val list = mutableListOf<Int>()
+    var j = 2
+    var cloneN = n
+    while (j <= min(n,9)) {
+        if (cloneN % j == 0) {
+            cloneN /= j
+            list.add(j)
+            --j
+        }
+        ++j
+    }
+    ++j
+    while (j <= cloneN) {
+        if (cloneN % j == 0) {
+            cloneN /= j
+            list.add(j)
+            j -= 2
+        }
+        j += 2
+    }
+
+    return list
+}
 
 /**
  * Сложная
@@ -195,7 +220,7 @@ fun factorize(n: Int): List<Int> = TODO()
  * Разложить заданное натуральное число n > 1 на простые множители.
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*", postfix = "")
 
 /**
  * Средняя
@@ -204,7 +229,15 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    var cloneN = n
+    val list = mutableListOf<Int>()
+    while (cloneN != 0) {
+        list.add(cloneN % base)
+        cloneN /= base
+    }
+    return list.asReversed()
+}
 
 /**
  * Сложная
@@ -214,7 +247,13 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    val alphabet = (('0'..'9') + ('a'..'z'))
+    val list = convert(n, base)
+    val string = StringBuilder("")
+    for (element in list) string.append(alphabet[element])
+    return string.toString()
+}
 
 /**
  * Средняя
@@ -223,7 +262,15 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var sum = 0
+    var degree = digits.size - 1
+    for (elem in digits) {
+        sum += elem * Math.pow(base.toDouble(), degree.toDouble()).toInt()
+        --degree
+    }
+    return sum
+}
 
 /**
  * Сложная
@@ -234,7 +281,17 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var sum = 0
+    val alphabet = (('0'..'9') + ('a'..'z'))
+    var degree = str.length - 1
+    for (elem in str) {
+        sum += alphabet.indexOf(elem) * pow(base.toDouble(), degree.toDouble()).toInt()
+        --degree
+    }
+    return sum
+}
+
 
 /**
  * Сложная
@@ -244,8 +301,50 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
-
+fun roman(n: Int): String {
+    var buf = n
+    var result = StringBuilder("")
+    val roman = listOf("", "I", "II", "III", "IV",
+            "V", "VI", "VII", "VIII", "IX")
+    while (buf >= 1000) {
+        buf -= 1000
+        result.append("M")
+    }
+    if (buf - 900 >= 0) {
+        buf -= 900
+        result.append("CM")
+    }
+    if (buf - 500 >= 0) {
+        buf -= 500
+        result.append("D")
+    }
+    if (buf - 400 >= 0) {
+        buf -= 400
+        result.append("CD")
+    }
+    while (buf >= 100) {
+        buf -= 100
+        result.append("C")
+    }
+    if (buf - 90 >= 0) {
+        buf -= 90
+        result.append("XC")
+    }
+    if (buf - 50 >= 0) {
+        buf -= 50
+        result.append("L")
+    }
+    if (buf - 40 >= 0) {
+        buf -= 40
+        result.append("XL")
+    }
+    while (buf >= 10) {
+        buf -= 10
+        result.append("X")
+    }
+    result.append(roman[buf])
+    return result.toString()
+}
 /**
  * Очень сложная
  *
@@ -253,4 +352,37 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val rus1 = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val rus1thous = listOf("", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
+            "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч")
+    val rus11 = listOf("", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+            "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
+    val rus10 = listOf("", "десять", "двадцать", "тридцать", "сорок",
+            "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
+    val rus100 = listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот",
+            "семьсот", "восемьсот", "девятьсот")
+    val string = mutableListOf<String>()
+    fun constructing(buf: Int){
+        string.add(rus100[buf / 100])
+        when {
+            buf % 10 == 0 -> string.add(rus10[(buf % 100) / 10])
+            ((buf % 100) > 10) && ((buf % 100) < 20) -> string.add(rus11[(buf % 100) - 10])
+            else -> {
+                string.add(rus10[(buf % 100) / 10])
+                if(buf == n / 1000) string.add(rus1thous[buf % 10])
+                else string.add(rus1[buf % 10])
+            }
+        }
+    }
+    if (n > 999){
+        val buf = n / 1000
+        constructing(buf)
+        if ((((buf % 100) > 10) && ((buf % 100) < 20))
+                ||(buf % 10 == 0)) string.add("тысяч")
+    }
+
+    val buf = n % 1000
+    constructing(buf)
+    return string.filter { it != "" }.joinToString(separator = " ")
+}
