@@ -75,7 +75,17 @@ fun dateStrToDigit(str: String): String = TODO()
  * Перевести её в строковый формат вида "15 июля 2016".
  * При неверном формате входной строки вернуть пустую строку
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+            "июля", "августа", "сентября", "октября", "ноября", "декабря")
+    val parts = digital.split(".")
+    try {
+        if ((parts[0].toInt() !in 1..31) || (parts[1].toInt() !in 1..12)
+                || (parts[2].toInt() < 0) || (digital.count({ it == '.' }) != 2)) return ""
+    }
+    catch(e: NumberFormatException) {return ""}
+    return String.format("%d %s %s", parts[0].toInt(), months[parts[1].toInt() - 1], parts[2])
+}
 
 /**
  * Средняя
@@ -89,8 +99,35 @@ fun dateDigitToStr(digital: String): String = TODO()
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (phone.length == 0) return ""
+    fun construct(result : StringBuilder): Boolean{
+        for (symbol in phone)
+            when {
+                (symbol in '0'..'9') -> result.append(symbol.toString())
+                (symbol == ')') || (symbol == '(')
+                        || (symbol == '-') || (symbol == '+')
+                        || (symbol == ' ') -> null
+                else -> return true
+            }
+        return false
+    }
 
+    when {
+        phone.first() in '0'..'9' -> {
+            val result = StringBuilder("")
+            val crash = construct(result)
+            if (crash) return "" else return result.toString()
+        }
+
+        phone.first() == '+' -> {
+            val result = StringBuilder("+")
+            val crash = construct(result)
+            if (crash) return "" else return result.toString()
+        }
+    }
+    return ""
+}
 /**
  * Средняя
  *
@@ -101,7 +138,32 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    if (jumps.length == 0) return -1
+    val allowedSymbols = listOf('%', '-')
+    val parts = jumps.split(" ")
+    val buf = StringBuilder("")
+    var bestScore = -1
+    var isItNumber = false
+    for (part in parts) {
+        for (symbol in part) {
+            when {
+                symbol in '0'..'9' -> {
+                    isItNumber = true
+                    buf.append(symbol.toString())
+                }
+                symbol == ' ' -> null
+                symbol in allowedSymbols -> if (isItNumber != false) return -1
+                else -> return -1
+            }
+        }
+        if ((isItNumber)&&(buf.toString().toInt() > bestScore))
+            bestScore = buf.toString().toInt()
+        buf.delete(0, buf.length)
+        isItNumber = false
+    }
+    return bestScore
+}
 
 /**
  * Сложная
@@ -113,7 +175,42 @@ fun bestLongJump(jumps: String): Int = TODO()
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (jumps.length == 0) return -1
+    val allowedSymbols = listOf('%', '-', '+')
+    val parts = jumps.split(" ")
+    val buf = StringBuilder("")
+    var bestScore = -1
+    var type = 1
+    var counted = false
+    //1 - число, -1 - %%-
+    for (part in parts) {
+        when {
+            type == 1 -> {
+                buf.delete(0, buf.length)
+                for (symbol in part)
+                    if (symbol in '0'..'9') buf.append(symbol.toString())
+                    else return -1
+            }
+            type == -1 -> {
+                var missed = 0
+                for (symbol in part)
+                    if (symbol in allowedSymbols)
+                        when {
+                            symbol == '-' -> counted = false
+                            symbol == '+' -> counted = true
+                            symbol == '%' -> ++missed
+                        }
+                    else return -1
+                if (missed == part.length) counted = false
+            }
+        }
+        if (counted && (buf.toString().toInt() > bestScore) &&
+                (type == -1)) bestScore = buf.toString().toInt()
+        type *= (-1)
+    }
+    return bestScore
+}
 
 /**
  * Сложная
